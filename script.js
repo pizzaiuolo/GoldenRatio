@@ -7,6 +7,9 @@ let ghost = [];
 let highlightedSegment = null;
 let historyStack = [];
 let currentHistoryPosition = -1;
+var makerjs = require('makerjs');
+
+
 
 function addCustomDivisionToDropdown() {
     const customValueInput = document.getElementById('customDivisionValueInput');
@@ -134,7 +137,7 @@ function updateCanvasDimensions(reset = false) {
 
     canvas.width = newWidth;
     canvas.height = newHeight;
-
+    adjustCanvasScale();
     drawSegments();
 }
 
@@ -231,12 +234,27 @@ function checkForSegmentDivision(mouseX, mouseY) {
     drawSegments();
 }
 
-canvas.addEventListener('mousemove', function(e) {
+/*canvas.addEventListener('mousemove', function(e) {
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
     checkForSegmentDivision(mouseX, mouseY);
+});*/
+
+function getCanvasScaleFactor() {
+    const displayWidth = canvas.clientWidth;
+    const actualWidth = canvas.width;
+    return actualWidth / displayWidth;
+}
+
+canvas.addEventListener('mousemove', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleFactor = getCanvasScaleFactor();
+    const mouseX = (e.clientX - rect.left) * scaleFactor;
+    const mouseY = (e.clientY - rect.top) * scaleFactor;
+    checkForSegmentDivision(mouseX, mouseY);
 });
+
 
 canvas.addEventListener('click', function(e) {
     if (ghost.length) {
@@ -324,7 +342,7 @@ canvas.addEventListener('click', function(e) {
 
 function resetCanvas() {
     document.getElementById('widthInput').value = 800;
-    document.getElementById('heightInput').value = 450;
+    document.getElementById('heightInput').value = 400;
     updateCanvasDimensions(true);
 }
 
@@ -369,6 +387,22 @@ updateCanvasDimensions();
 resetCanvas();
 saveState();
 
+let filenameDXF = '';
+
+function updateFilename() {
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}${currentDate.getFullYear()}_${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}:${currentDate.getSeconds().toString().padStart(2, '0')}`;
+    filenameDXF = `GoldenLew_${formattedDate}.dxf`;
+    filenamePDF = `GoldenLew_${formattedDate}.pdf`;
+}
+
+// Update filename immediately
+updateFilename();
+
+// Set an interval to update the filename every second
+setInterval(updateFilename, 1000);
+
+
 function exportToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({
@@ -384,7 +418,7 @@ function exportToPDF() {
     });
 
     // Save the generated PDF
-    doc.save("exported_canvas.pdf");
+    doc.save(filenamePDF);
 }
 
 function exportWithDimensionsToPDF() {
@@ -404,6 +438,59 @@ function exportWithDimensionsToPDF() {
     });
 
     // Save the generated PDF
-    doc.save("exported_with_dimensions_canvas.pdf");
+    doc.save(filenamePDF);
 }
+
+
+
+function exportToDXF() {
+    let models = {};
+
+    segments.forEach((segment, index) => {
+        models["segment" + index] = new makerjs.models.Rectangle(segment.width, segment.height);
+        models["segment" + index].origin = [segment.x, segment.y];
+    });
+
+    const dxfContent = makerjs.exporter.toDXF({ models: models });
+
+    // Trigger the download
+    const blob = new Blob([dxfContent], { type: 'application/dxf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('href', url);
+    a.setAttribute('download', filenameDXF);
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+function adjustCanvasScale() {
+    const container = document.querySelector('.container');
+    
+    // Calculate the available width: window width minus 5% and minus container paddings/borders
+    const containerStyle = getComputedStyle(container);
+    const containerPaddingX = parseFloat(containerStyle.paddingLeft) + parseFloat(containerStyle.paddingRight);
+    const containerBorderX = parseFloat(containerStyle.borderLeftWidth) + parseFloat(containerStyle.borderRightWidth);
+    const availableWidth = window.innerWidth * 0.95 - containerPaddingX - containerBorderX;
+    
+    if (canvas.width > availableWidth) {
+        // Set the CSS width of the canvas to the available width
+        canvas.style.width = availableWidth + "px";
+        canvas.style.height = "auto"; // Maintain the aspect ratio
+    } else {
+        // Reset the canvas to its natural size if the window width increases
+        canvas.style.width = "";
+        canvas.style.height = "";
+    }
+}
+
+
+// Adjust the canvas scale whenever the window is resized
+window.addEventListener('resize', adjustCanvasScale);
+
+
+adjustCanvasScale();
+
+
 

@@ -2,12 +2,18 @@ body {
     font-family: 'Lato', sans-serif;
     background-color: #d5d5d5;
     display: flex;
-    align-items: center;
+    align-items: top;
     justify-content: center;
-    height: 100vh;
+    /*height: 100vh;*/
     margin: 0;
     overflow: hidden;
+    overflow-y: auto; /* This allows vertical scrolling if the content overflows */
+    overflow-x: hidden; /* This hides horizontal scrolling. You can change it to 'auto' if you also want horizontal scrolling */
+    height: auto; /* Ensure the height isn't fixed to 100vh or any fixed value */
+    max-height: none;
 }
+
+
 
 .container {
     display: flex;

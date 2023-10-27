@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="http://maker.js.org/target/js/browser.maker.js" type="text/javascript"></script>
+
+
 
 <head>
     <meta charset="UTF-8">
@@ -9,9 +12,10 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
     <div class="container">
-        <div STYLE="font-family : monospace;font-size : 18pt">
-            Lewandowski Golden Ratio Calculator Canvas Planner<br><br>
+        <div STYLE="font-family : monospace;font-size : 18pt" align="center">
+            <p align="center" style="color: gold; background-color: #499ed2">Golden Lew</p>Lewandowski Golden Ratio Calculator Canvas Planner<br><br>
         </div>
         <div class="controls">
             Width: <input type="number" id="widthInput" value="800">
@@ -25,10 +29,12 @@
         <div>
             <button onclick="exportToPDF()">Export PDF lines only</button>
             <button onclick="exportWithDimensionsToPDF()">Export PDF with dimensions</button>
+            <button onclick="exportToDXF()">Export to DXF</button>
+
             <button onclick="undo()">Undo</button>
             <button onclick="redo()">Redo</button>
         </div>
-            <br><br>
+            <br>
             <p align="center">PICK DIVISION: <br>or scroll mouse wheel over canvas</p><select id="divisionType" STYLE="font-family : monospace;
             font-size : 12pt">
                 <option value="goldenRatio">Golden Ratio</option>
@@ -39,13 +45,14 @@
                 <option value="9">Divide by 9</option>
             </select>
             <br>
-            <br>
 
         <canvas id="canvas" style="background-color: #dce2e5;"></canvas>
         <div STYLE="font-family : monospace;font-size : 8pt; color : white;"">
-            <br><br><br>Lewandowski Golden Ratio Calculator Canvas Planner 2024. Donate.<br><br>
+            <br><br><br>Lewandowski Golden Ratio Calculator Canvas Planner 2024. Donate. v_27.10.2023<br><br>
         </div>
     </div>
-    <script src="script.js"></script>
+
+
+<script src="script.js"></script>
 </body>
 </html>
