@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Ratio Divider</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div STYLE="font-family : monospace;font-size : 18pt">
+            Lewandowski Golden Ratio Calculator Canvas Planner<br><br>
+        </div>
+        <div class="controls">
+            Width: <input type="number" id="widthInput" value="800">
+            Height: <input type="number" id="heightInput" value="450">
+            <button onclick="updateCanvasDimensions()">Update canvas size</button>
+            <br><br> 
+            Custom division: <input type="number" id="customDivisionValueInput" placeholder="Enter custom division value">
+            <button onclick="addCustomDivisionToDropdown()">Add to division list</button>
+            <button onclick="resetCanvas()">Reset</button>
+        </div>
+        <div>
+            <button onclick="exportToPDF()">Export PDF lines only</button>
+            <button onclick="exportWithDimensionsToPDF()">Export PDF with dimensions</button>
+            <button onclick="undo()">Undo</button>
+            <button onclick="redo()">Redo</button>
+        </div>
+            <br><br>
+            <p align="center">PICK DIVISION: <br>or scroll mouse wheel over canvas</p><select id="divisionType" STYLE="font-family : monospace;
+            font-size : 12pt">
+                <option value="goldenRatio">Golden Ratio</option>
+                <option value="2">Divide by 2</option>
+                <option value="3">Divide by 3</option>
+                <option value="5">Divide by 5</option>
+                <option value="7">Divide by 7</option>
+                <option value="9">Divide by 9</option>
+            </select>
+            <br>
+            <br>
+
+        <canvas id="canvas" style="background-color: #dce2e5;"></canvas>
+        <div STYLE="font-family : monospace;font-size : 8pt; color : white;"">
+            <br><br><br>Lewandowski Golden Ratio Calculator Canvas Planner 2024. Donate.<br><br>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
